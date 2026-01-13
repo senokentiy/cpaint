@@ -14,6 +14,6 @@ make
 
 # usage
 ```
-./cpaint FILE
+./cpaint
 ```
 
