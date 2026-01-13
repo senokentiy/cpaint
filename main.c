@@ -1,16 +1,13 @@
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_events.h>
-#include <SDL2/SDL_mouse.h>
-#include <SDL2/SDL_shape.h>
-#include <SDL2/SDL_surface.h>
-#include <SDL2/SDL_video.h>
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "include/color.h"
+
 #define WIDTH 1000
 #define HEIGHT 800
-#define PEN_SIZE 5
-#define COLOR 0xFF0000
+#define PEN_SIZE 10
+#define RUBBER_SIZE 40
 
 #define FPS 60
 #define DELAY (1.0 / FPS) * 1000
@@ -48,15 +45,36 @@ draw_circle (SDL_Surface *surface, int inix, int iniy, int radius,
             }
         }
     }
-
     return EXIT_SUCCESS;
 }
 
 
+// int
+// rubber (SDL_Window *window, SDL_Surface *surface, coords *pos, Uint32 color)
+// {
+//     SDL_Rect rect = { pos->x, pos->y, RUBBER_SIZE, RUBBER_SIZE };
+
+//     if (SDL_FillRect (surface, &rect, color))
+//     {
+//         fprintf (stderr, "[x] rubber error: %s\n", SDL_GetError ());
+//         return EXIT_FAILURE;
+//     }
+
+//     if (SDL_UpdateWindowSurface (window))
+//     {
+//         fprintf (stderr, "[x] rubber update error: %s\n", SDL_GetError ());
+//         return EXIT_FAILURE;
+//     }
+
+//     return EXIT_SUCCESS;
+// }
+
+
 int
-draw (SDL_Window *window, SDL_Surface *surface, coords *pos, Uint32 color)
+draw (SDL_Window *window, SDL_Surface *surface, coords *pos, int pen_size,
+      Uint32 color)
 {
-    if (draw_circle (surface, pos->x, pos->y, PEN_SIZE, color))
+    if (draw_circle (surface, pos->x, pos->y, pen_size, color))
     {
         return EXIT_FAILURE;
     }
@@ -74,9 +92,9 @@ draw (SDL_Window *window, SDL_Surface *surface, coords *pos, Uint32 color)
 int
 setup_default_surface (SDL_Window *window, SDL_Surface *surface)
 {
-    if (SDL_SetSurfaceColorMod (surface, 0xED, 0xED, 0xED))
+    if (SDL_FillRect (surface, NULL, BACKGROUND))
     {
-        fprintf (stderr, "[x] fill error: %s\n", SDL_GetError ());
+        fprintf (stderr, "[x] default setup error: %s\n", SDL_GetError ());
         return EXIT_FAILURE;
     }
 
@@ -90,12 +108,45 @@ setup_default_surface (SDL_Window *window, SDL_Surface *surface)
 }
 
 
+void
+change_pen (SDL_Event *event, Uint32 *color, int *pen_size)
+{
+    switch (event->key.keysym.sym)
+    {
+    case SDLK_0:
+        *pen_size = RUBBER_SIZE;
+        *color = BACKGROUND;
+        break;
+    case SDLK_1:
+        *color = RED;
+        break;
+    case SDLK_2:
+        *color = GREEN;
+        break;
+    case SDLK_3:
+        *color = BLUE;
+        break;
+    case SDLK_4:
+        *color = WHITE;
+        break;
+    case SDLK_5:
+        *color = YELLOW;
+        break;
+    case SDLK_6:
+        *color = PINK;
+    }
+}
+
+
 int
 app (SDL_Window *window, SDL_Surface *surface)
 {
     int running = 1;
     int drawing = 0;
+
     coords pos = {};
+    Uint32 color = RED;
+    int pen_size = PEN_SIZE;
 
     while (running)
     {
@@ -107,6 +158,14 @@ app (SDL_Window *window, SDL_Surface *surface)
             case SDL_QUIT:
                 running = 0;
                 break;
+            case SDL_KEYDOWN:
+                if (event.key.keysym.sym >= SDLK_0
+                    && event.key.keysym.sym <= SDLK_9)
+                {
+                    change_pen (&event, &color, &pen_size);
+                }
+                break;
+
             case SDL_MOUSEMOTION:
                 pos.x = event.motion.x;
                 pos.y = event.motion.y;
@@ -123,14 +182,11 @@ app (SDL_Window *window, SDL_Surface *surface)
 
         if (drawing)
         {
-            // coords pos = {};
-            // SDL_GetMouseState (&pos.x, &pos.y);
-
-            if (draw (window, surface, &pos, COLOR))
+            if (draw (window, surface, &pos, pen_size, color))
             {
                 return EXIT_FAILURE;
             }
-            SDL_Delay (DELAY);
+            // SDL_Delay (DELAY);
         }
     }
 

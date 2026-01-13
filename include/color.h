@@ -1,0 +1,8 @@
+#define RED 0xFF0000
+#define GREEN 0x00FF00
+#define BLUE 0x0000FF
+#define WHITE 0xFFFFFF
+#define YELLOW 0xFFFFF00
+#define PINK 0xFF007F
+#define BACKGROUND 0x00
+
