@@ -70,21 +70,27 @@ change_pen (SDL_Event *event, Uint32 *color, int *pen_size)
         *color = BACKGROUND;
         break;
     case SDLK_1:
+        *pen_size = PEN_SIZE;
         *color = RED;
         break;
     case SDLK_2:
+        *pen_size = PEN_SIZE;
         *color = GREEN;
         break;
     case SDLK_3:
+        *pen_size = PEN_SIZE;
         *color = BLUE;
         break;
     case SDLK_4:
+        *pen_size = PEN_SIZE;
         *color = WHITE;
         break;
     case SDLK_5:
+        *pen_size = PEN_SIZE;
         *color = YELLOW;
         break;
     case SDLK_6:
+        *pen_size = PEN_SIZE;
         *color = PINK;
     }
 }
