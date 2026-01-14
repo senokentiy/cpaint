@@ -195,7 +195,7 @@ app (SDL_Window *window, SDL_Surface *surface)
 
 
 int
-main (int argc, char **argv)
+main (void)
 {
     SDL_Window *window = NULL;
 

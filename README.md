@@ -17,3 +17,14 @@ make
 ./cpaint
 ```
 
+# some docs
+```
+1 -- red 
+2 -- green
+3 -- blue
+4 -- white
+5 -- yellow
+6 -- pink
+0 -- rubber
+```
+
